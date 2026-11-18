@@ -1,0 +1,53 @@
+name: pz
+
+x-common: &common
+  build:
+    context: ./docker
+  image: pz-server:local
+  env_file: .env
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+
+services:
+  pz:
+    <<: *common
+    container_name: pz-server
+    restart: unless-stopped
+    command: ["server"]
+    ports:
+      - "16261:16261/udp"
+      - "16262:16262/udp"
+      # RCON is intentionally NOT published — reach it with:
+      #   docker compose exec pz pz-rcon <command>
+    volumes:
+      - ${SERVER_FILES:-pz-server-files}:/opt/pzserver
+      - ${ZOMBOID_DATA:-pz-zomboid-data}:/home/steam/Zomboid
+      - ./config/mods.txt:/config/mods.txt:ro
+    # Must cover save + quit. Docker's default 10s can kill the server mid-save.
+    stop_grace_period: 3m
+    ulimits:
+      nofile: { soft: 65535, hard: 65535 }
+    deploy:
+      resources:
+        limits:
+          # Hard cap so a leak can't take the whole host down.
+          # Keep it ~2-3 GB above SERVER_MEMORY (Java heap + native memory).
+          memory: ${CONTAINER_MEMORY_LIMIT:-7g}
+
+  backup:
+    <<: *common
+    container_name: pz-backup
+    restart: unless-stopped
+    command: ["backup"]
+    environment:
+      RCON_HOST: pz
+    volumes:
+      - ${ZOMBOID_DATA:-pz-zomboid-data}:/home/steam/Zomboid:ro
+      - ./backups:/backups
+    depends_on:
+      - pz
+
+volumes:
+  pz-server-files:
+  pz-zomboid-data:

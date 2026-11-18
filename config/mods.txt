@@ -1,0 +1,69 @@
+# =============================================================================
+#  Mod list — the ONLY place you need to edit to add/remove mods.
+#  On every container start, entrypoint.sh turns this file into the
+#  WorkshopItems= / Mods= / Map= lines of the server .ini.
+#
+#  Format (one Workshop item per line, fields separated by "|"):
+#     <workshop_id> | <mod_id>[;<mod_id>...] | <map_folder>   (map_folder optional)
+#  Lines starting with "#" are ignored. Mod IDs may contain spaces — copy them
+#  EXACTLY from the "Mod ID:" line on the Workshop page.
+#  Order matters: libraries/dependencies first, maps in the order they should
+#  override each other (the vanilla map is always appended last automatically).
+#
+#  ⚠  = places objects in the world / irreversible: do NOT remove mid-run
+#       without a backup (vehicles, maps, furniture).
+#  All IDs verified on the Workshop pages on 2026-11-18 against B42.21 stable.
+# =============================================================================
+
+# ---- Libraries (required by mods below) -------------------------------------
+2896041179 | errorMagnifier
+3077900375 | ChuckleberryFinnAlertSystem
+3171167894 | damnlib
+
+# ---- Quality of life ---------------------------------------------------------
+2503622437 | SkillRecoveryJournal
+3717968421 | BB_CommonSenseFix
+2313387159 | BetterSortCC
+2544353492 | P4HasBeenRead
+2847184718 | ProximityInventory
+3682936016 | EQUIPMENT_UI_B42
+2650547917 | manageContainers
+2866258937 | MiniHealthPanel
+2734705913 | MapSymbolSizeSlider
+2815560151 | BLTAnnotations
+2553809727 | KillCount
+2757712197 | VehicleRepairOverhaul
+
+# ---- Gameplay variety --------------------------------------------------------
+3577903007 | VanillaFoodsExpanded
+3651954650 | SaucedCarts
+# ⚠ KI5 vehicles (need damnlib)
+2642541073 | 92amgeneralM998
+2409333430 | 91range
+# ⚠ KI5 shipping containers (placeable storage)
+2625625421 | isoContainers
+
+# ---- Optional: test on a copy of the world before enabling ------------------
+# Vehicle salvaging (B42-only extra of Vehicle Repair Overhaul): add the mod id
+# to the same line instead:  2757712197 | VehicleRepairOverhaul;VehicleSalvageOverhaulB42
+#
+# Helicopter events (B42 replacement for Expanded Helicopter Events, small userbase)
+# 3672792485 | HelicopterEventExpansionFramework
+#
+# Radio with custom music (standalone, MP-tagged)
+# 3631572046 | TrueMusicRadio42
+#
+# ⚠ Maps — no explicit MP statement / unclear deps. Add before you START a world;
+#   adding a map to an existing world only affects never-visited cells.
+# 3602388131 | Greenleaf B42 version | Greenleaf
+# 2872461779 | Muldraugh-Westoutskirts ShippingCo (42) | Muldraugh-Westoutskirts ShippingCo-(42rework)
+#
+# NOT recommended on a Linux server right now: Tsar's Common Library B42
+# (3402491515) + Autotsar Trailers (3402493701) — reported PZXmlParserException
+# on Linux (case-sensitive "AnimSets" path).
+#
+# CONFLICTS — never enable together:
+#   original Common Sense (2875848298)  <->  BB_CommonSenseFix
+#   Inventory Tetris (3775513231)       <->  Equipment UI
+#   Smarter Storage (3290232938)        <->  Manage Containers
+#   PM2 Complete Repair Overhaul        <->  Vehicle Repair Overhaul
